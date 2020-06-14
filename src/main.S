@@ -6,14 +6,17 @@
 main:
   nop
   ldr r0, =my_data
-  ldrex r1, [r0]        //update the exclusive monitors
-  add r1, 1
-  strex r2, r1, [r0]    //successful store
-  ldr r0, =my_data2
-  ldrex r1, [r0]        //try another exclusive load
-  add r1, 1
-  strex r2, r1, [r0]    //it needs a exclusive load before to update the monitors
-  cbz r2, success
+  ldrex r2, [r0]        //update the exclusive monitors
+  ldr r1, =my_data2
+  ldrex r3, [r1]        //try another exclusive load
+  add r2, 1
+  add r3, 1
+  strex r3, r3, [r1]    //it needs a exclusive load before to update the monitors
+  strex r2, r2, [r0]    //successful store
+  
+ 
+
+  cbz r3, success
 
   b main
   success:
